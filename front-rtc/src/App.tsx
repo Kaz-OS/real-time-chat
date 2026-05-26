@@ -30,16 +30,39 @@ function Chat({ params }: { params: { id: string } }) {
     }
   });
   const [socket, setSocket] = useState<WebSocket | null>(null);
+  const [message, setMessage] = useState("");
+  const [historique, setHistorique] = useState<string[]>([]);
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:3000/ws?id=" + roomID);
     ws.onopen = () => console.log("Connecté");
+    ws.onmessage = (event) => {
+      setHistorique((ancienHistorique) => [...ancienHistorique, event.data]);
+    };
     setSocket(ws);
     return () => {
       ws.close();
     };
   }, [roomID]);
-
-  return <div>Attente {params.id}</div>;
+  const envoyerMessage = () => {
+    if (socket) {
+      socket.send(JSON.stringify({ text: message, target: params.id }));
+      setHistorique([...historique, message]);
+      setMessage("");
+    }
+  };
+  return (
+    <div className="container">
+      <div className="box">
+        {historique.map((msg, index) => (
+          <p key={index}>{msg}</p>
+        ))}
+      </div>
+      <div className="messageBar">
+        <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} />
+        <button onClick={envoyerMessage}>Send</button>
+      </div>
+    </div>
+  );
 }
 
 function App() {

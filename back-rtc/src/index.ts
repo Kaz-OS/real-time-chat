@@ -4,7 +4,7 @@ const app = new Elysia()
   .ws("/ws", {
     body: t.Object({
       target: t.String(),
-      data: t.String(),
+      text: t.String(),
     }),
 
     query: t.Object({
@@ -17,12 +17,7 @@ const app = new Elysia()
     },
 
     message(ws, message) {
-      const { id } = ws.data.query;
-      ws.publish(message.target, {
-        id,
-        text: message.data,
-        time: Date.now(),
-      });
+      ws.publish(message.target, message.text);
     },
   })
   .listen(3000);
