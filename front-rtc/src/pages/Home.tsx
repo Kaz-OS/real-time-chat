@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 
 function Home() {
   const [monId] = useState(() => crypto.randomUUID());
-  const [location, setLocation] = useLocation();
+  const [, setLocation] = useLocation();
 
   const creerRoom = () => {
     sessionStorage.setItem("isHost", "true");
