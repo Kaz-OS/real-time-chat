@@ -1,4 +1,3 @@
-// 1️⃣ Les imports obligatoires
 import { useState } from "react";
 import { useLocation } from "wouter";
 
