@@ -3,14 +3,15 @@ import { useLocation } from "wouter";
 
 function Chat({ params }: { params: { id: string } }) {
   const isHost = sessionStorage.getItem("isHost");
-  const [, setLocation] = useLocation(); // L'outil de téléportation
+  const [, setLocation] = useLocation();
 
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [message, setMessage] = useState("");
   const [historique, setHistorique] = useState<string[]>([]);
 
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:3000/ws?id=" + params.id);
+    const baseUrl = import.meta.env.VITE_API_URL || "ws://localhost:3000";
+    const ws = new WebSocket(baseUrl + "/ws?id=" + params.id);
     ws.onopen = () => console.log("Connecté");
 
     ws.onmessage = (event) => {
